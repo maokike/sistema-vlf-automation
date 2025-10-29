@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model VLFReport {
+  id                   String     @id @default(uuid())
+  projectName          String
+  clientName           String
+  cableLengthMeters    Float
+  resistanceOhms       Float      @default(0) // Default value, will be calculated
+  cableBrand           String     @default("N/A") // Default value
+  workType             WorkType
+  testVoltageVolts     Int
+  testResult           TestResult @default(PENDIENTE)
+  testPointDescription String     @default("Subestación + Interconexión")
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  @@map("vlf_reports")
+}
+
+enum WorkType {
+  NUEVA_CONSTRUCCION
+  REMODELACION
+}
+
+enum TestResult {
+  APROBADO
+  FALLIDO
+  PENDIENTE
+}

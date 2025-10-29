@@ -1,0 +1,14 @@
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# Expose port 3000 to be accessible from outside the container
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
