@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/index.js",
     "prisma": "dotenv -- npx prisma"
   },

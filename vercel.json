@@ -6,7 +6,7 @@
       "use": "@vercel/next"
     }
   ],
-  "buildCommand": "npm run vercel-build",
+  "buildCommand": "npm run build",
   "outputDirectory": "packages/web/.next",
   "installCommand": "npm install"
 }
