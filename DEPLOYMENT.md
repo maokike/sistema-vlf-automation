@@ -1,93 +1,98 @@
-# Guía de Despliegue Paso a Paso (para no programadores) - v2
+# Guía de Despliegue Paso a Paso (para no programadores) - v3
 
-¡Hola! Esta guía actualizada te llevará de la mano para que puedas poner tu proyecto en internet. He realizado algunas mejoras para que el proceso sea aún más fácil y automático.
+¡Hola! Esta guía actualizada contiene la corrección final para asegurar un despliegue exitoso. He añadido el paso clave que faltaba.
 
 ---
 
 ### Parte A: Preparando tu Ordenador
 
-Antes de subir el proyecto, necesitas instalar 3 herramientas gratuitas en tu ordenador. Son como los "programas base" que los desarrolladores usan. **Si ya los instalaste la vez anterior, puedes saltar esta parte.**
+**Si ya instalaste estas herramientas, puedes saltar esta parte.**
 
-1.  **Git:** Imagina que es un "guardador de versiones" súper avanzado para el código. Nos permitirá subir el proyecto a internet.
-    *   **Descarga aquí:** [git-scm.com/downloads](https://git-scm.com/downloads)
-    *   **Instalación:** Abre el instalador y haz clic en "Next" en todas las ventanas, dejando las opciones por defecto.
+1.  **Git:** El "guardador de versiones" para el código.
+    *   **Descarga:** [git-scm.com/downloads](https://git-scm.com/downloads) (Instalación con opciones por defecto).
 
-2.  **Node.js:** Es el "motor" que hace funcionar el código de nuestro proyecto (tanto el frontend como el backend).
-    *   **Descarga aquí:** [nodejs.org](https://nodejs.org/)
-    *   **Instalación:** Descarga la versión "LTS" (la recomendada). Abre el instalador y haz clic en "Next" en todas las ventanas hasta que termine.
+2.  **Node.js:** El "motor" para el código.
+    *   **Descarga:** [nodejs.org](https://nodejs.org/) (Versión "LTS", instalación con opciones por defecto).
 
-3.  **Docker Desktop:** Piensa en Docker como una forma de crear "cajas" virtuales para nuestras aplicaciones, asegurando que funcionen igual en cualquier ordenador.
-    *   **Descarga aquí:** [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
-    *   **Instalación:** Sigue las instrucciones del instalador. Puede que te pida reiniciar. Una vez instalado, ábrelo y déjalo funcionando en segundo plano.
+3.  **Docker Desktop:** "Cajas" virtuales para las aplicaciones.
+    *   **Descarga:** [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop) (Instalar y dejar corriendo en segundo plano).
 
 ---
 
 ### Parte B: Subiendo el Proyecto a Internet (GitHub)
 
-Ahora vamos a poner el código en **GitHub**, que es como una red social para guardar y compartir código.
+Sube el código a **GitHub**, el "almacén" de código online.
 
-1.  **Crea una cuenta en GitHub:** Ve a [github.com](https://github.com) y regístrate. Es gratis.
+1.  **Crea una cuenta gratuita en GitHub:** [github.com](https://github.com)
 
 2.  **Crea un nuevo repositorio:**
-    *   Haz clic en el botón verde **"New"** o en el símbolo `+` y selecciona **"New repository"**.
-    *   **Dale un nombre:** `sistema-vlf-automation`.
-    *   Asegúrate de que sea **"Public"**.
+    *   Clic en **"New"** o `+` -> **"New repository"**.
+    *   **Nombre:** `sistema-vlf-automation`.
+    *   **Público**.
     *   **NO** selecciones "Add a README file".
-    *   Haz clic en **"Create repository"**.
+    *   Clic en **"Create repository"**.
 
 3.  **Sube el código:**
-    *   Abre la carpeta del proyecto que te he entregado. Haz clic derecho y busca una opción que diga **"Abrir en Terminal"** o **"Git Bash Here"**.
-    *   Copia y pega los siguientes comandos en la terminal, uno por uno, presionando Enter después de cada uno.
+    *   Abre la carpeta del proyecto y luego una **Terminal** o **Git Bash**.
+    *   Copia y pega los siguientes comandos uno por uno:
 
     ```bash
     git init
     git add .
-    git commit -m "Project ready for deployment"
+    git commit -m "Final deployment fixes"
     git branch -M main
     git remote add origin https://github.com/TU_USUARIO/sistema-vlf-automation.git
     git push -u origin main
     ```
-    *   **¡Importante!** Reemplaza `TU_USUARIO` con tu nombre de usuario real de GitHub.
-    *   Te pedirá tu usuario y contraseña de GitHub.
-
-¡Listo! Tu código actualizado ya está en GitHub.
+    *   **¡Importante!** Reemplaza `TU_USUARIO` con tu nombre de usuario de GitHub.
 
 ---
 
 ### Parte C: Creando la Base de Datos y el Backend (Render)
 
-Ahora vamos a poner a funcionar el "cerebro" (API) y la "memoria" (base de datos) de la aplicación en **Render**.
+Pondremos en marcha el "cerebro" (API) y la "memoria" (base de datos) en **Render**.
 
-1.  **Crea una cuenta en Render:** Ve a [render.com](https://render.com) y regístrate usando tu cuenta de GitHub.
+1.  **Crea una cuenta en Render:** [render.com](https://render.com) (usa tu cuenta de GitHub).
 
-2.  **Crea un nuevo "Blueprint":**
-    *   En tu dashboard de Render, haz clic en **"New"** -> **"Blueprint"**.
-    *   Conecta tu cuenta de GitHub y selecciona tu repositorio `sistema-vlf-automation`.
-    *   **Magia Automática:** Render leerá el archivo `render.yaml` que he creado y configurará automáticamente la base de datos y el servicio web.
-    *   Haz clic en **"Apply"**.
+2.  **Crea un "Blueprint":**
+    *   En tu dashboard, clic en **"New"** -> **"Blueprint"**.
+    *   Conecta tu repositorio `sistema-vlf-automation`.
+    *   Render leerá el archivo `render.yaml` y configurará todo automáticamente.
+    *   Clic en **"Apply"**.
 
-Render empezará a trabajar. Puede tardar unos minutos. Cuando termine, tendrás una URL pública para tu API. **Cópiala**, la necesitarás en el siguiente paso.
+3.  **Obtén la Dirección de la Base de Datos:**
+    *   Una vez que los servicios se hayan creado, ve al dashboard de Render.
+    *   Haz clic en tu base de datos (`vlf-database`).
+    *   En la sección **"Info"**, busca un campo llamado **"External Connection String"**.
+    *   **Copia esa dirección.** La necesitarás inmediatamente.
 
 ---
 
 ### Parte D: Publicando la Interfaz Web (Frontend) en Vercel
 
-Finalmente, vamos a publicar la parte visible de tu aplicación en **Vercel**.
+Ahora publicaremos la parte visible de tu aplicación en **Vercel**.
 
-1.  **Crea una cuenta en Vercel:** Ve a [vercel.com](https://vercel.com) y regístrate usando tu cuenta de GitHub.
+1.  **Crea una cuenta en Vercel:** [vercel.com](https://vercel.com) (usa tu cuenta de GitHub).
 
 2.  **Importa tu proyecto:**
-    *   En tu dashboard, haz clic en **"Add New..."** -> **"Project"**.
+    *   En tu dashboard, clic en **"Add New..."** -> **"Project"**.
     *   Busca tu repositorio `sistema-vlf-automation` y haz clic en **"Import"**.
 
 3.  **Configura el proyecto:**
-    *   **Magia Automática (v2):** Gracias al nuevo archivo `vercel.json` que he añadido, Vercel detectará **automáticamente** que tu aplicación es de Next.js y que se encuentra en la carpeta `packages/web`. ¡Ya no tienes que configurar el "Root Directory"!
-    *   Despliega la sección **"Environment Variables"** (Variables de Entorno).
-    *   Añade una nueva variable para que tu web sepa cómo encontrar al "cerebro" (la API):
+    *   Vercel detectará tu aplicación Next.js automáticamente gracias al archivo `vercel.json`.
+    *   Busca y despliega la sección **"Environment Variables"** (Variables de Entorno).
+    *   **¡ESTE ES EL PASO CLAVE QUE FALTABA!** Necesitamos añadir dos variables:
+
+    *   **Variable 1: La dirección del "cerebro" (API):**
         *   **Name:** `NEXT_PUBLIC_API_URL`
-        *   **Value:** Pega la URL de tu API de Render que copiaste en el paso anterior.
+        *   **Value:** Pega la URL de tu API de Render (la que termina en `.onrender.com`).
+
+    *   **Variable 2: La dirección de la "memoria" (Base de Datos):**
+        *   **Name:** `DATABASE_URL`
+        *   **Value:** Pega la **"External Connection String"** que copiaste de Render en el paso anterior.
+
     *   Haz clic en **"Deploy"**.
 
-Vercel comenzará a construir tu web. Cuando termine, te dará una URL pública. **¡Esa es la dirección de tu aplicación en internet!**
+Vercel comenzará a construir tu web. Ahora tiene toda la información que necesita y el despliegue debería completarse sin errores. Cuando termine, te dará la URL pública de tu aplicación.
 
-¡Felicidades! Con estas mejoras, el proceso es más robusto y automático.
+¡Felicidades! Ahora sí, el proceso está completo.
