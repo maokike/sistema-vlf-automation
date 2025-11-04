@@ -1,12 +1,10 @@
 services:
-  # 1. The PostgreSQL Database
   - type: pserv
     name: vlf-database
     runtime: postgres
     postgresMajorVersion: 15
     plan: free
 
-  # 2. The Backend API Service
   - type: web
     name: vlf-api
     runtime: docker
@@ -18,5 +16,3 @@ services:
           type: pserv
           name: vlf-database
           property: connectionString
-      - key: NODE_ENV
-        value: production
