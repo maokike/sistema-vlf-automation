@@ -24,7 +24,20 @@ model VLFReport {
   createdAt            DateTime   @default(now())
   updatedAt            DateTime   @updatedAt
 
+  // Relation to User
+  user                 User       @relation(fields: [userId], references: [id])
+  userId               String
+
   @@map("vlf_reports")
+}
+
+model User {
+  id        String      @id @default(uuid())
+  username  String      @unique
+  password  String
+  reports   VLFReport[]
+
+  @@map("users")
 }
 
 enum WorkType {

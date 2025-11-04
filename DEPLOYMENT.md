@@ -1,53 +1,57 @@
-# Guía de Despliegue - v5 (La Versión Final y Correcta)
+# Guía de Despliegue - v6 (Versión Segura y Final)
 
-Por favor, acepta mis más sinceras disculpas por los errores anteriores. He identificado el problema final, que no estaba en el código, sino en las instrucciones que te di. Esta guía contiene las instrucciones correctas y simplificadas.
+Esta guía contiene las instrucciones finales y seguras para el despliegue. He añadido una mejora de seguridad automática.
 
 ---
 
 ### Parte A y B: Preparación y Subida a GitHub
 
-Estas partes no cambian. Asegúrate de que tu última versión del código esté en tu repositorio de GitHub.
+(Sin cambios - Asegúrate de que tu última versión del código esté en GitHub)
 
 ---
 
 ### Parte C: Creando la Base de Datos y el Backend (Render)
 
-Este proceso en Render ha funcionado bien y no necesita cambios. Una vez desplegado, asegúrate de tener a mano dos cosas:
-1.  La **URL de tu API** (termina en `.onrender.com`).
-2.  La **"External Connection String"** de tu base de datos (`vlf-database`).
+1.  **Crea una cuenta en Render:** [render.com](https://render.com) (usa tu cuenta de GitHub).
+
+2.  **Crea un "Blueprint":**
+    *   En tu dashboard, clic en **"New"** -> **"Blueprint"**.
+    *   Conecta tu repositorio `sistema-vlf-automation`.
+    *   Render leerá el archivo `render.yaml` y configurará todo automáticamente.
+    *   **Nota de Seguridad:** Verás que Render planea crear una variable llamada `JWT_SECRET`. Este es un "secreto" de seguridad para la autenticación de usuarios. Lo hemos configurado para que Render genere un valor seguro y aleatorio por ti. ¡No necesitas hacer nada!
+    *   Clic en **"Apply"**.
+
+3.  **Obtén las Direcciones:**
+    *   Una vez creado, ve al dashboard de Render y copia dos cosas:
+        1.  La **URL de tu API** (termina en `.onrender.com`).
+        2.  La **"External Connection String"** de tu base de datos (`vlf-database`).
 
 ---
 
-### Parte D: Publicando la Interfaz Web (Frontend) en Vercel - INSTRUCCIONES FINALES
-
-Este es el proceso corregido. La clave está en darle a Vercel la configuración exacta que necesita de una forma muy simple.
+### Parte D: Publicando la Interfaz Web (Frontend) en Vercel
 
 1.  **Crea una cuenta en Vercel:** [vercel.com](https://vercel.com) (usa tu cuenta de GitHub).
 
 2.  **Importa tu proyecto:**
-    *   En tu dashboard, clic en **"Add New..."** -> **"Project"**.
-    *   Busca tu repositorio `sistema-vlf-automation` y haz clic en **"Import"**.
+    *   **"Add New..."** -> **"Project"** -> Importa tu repositorio `sistema-vlf-automation`.
 
 3.  **Configura el proyecto:**
-    *   Serás llevado a la página de "Configure Project". Aquí es donde haremos los ajustes finales y correctos.
-    *   **PASO 1: Ajustes de Construcción (Build & Development Settings).**
-        *   **Root Directory:** Haz clic en **"Edit"**, selecciona **`packages/web`**, y haz clic en "Continue". Vercel detectará el proyecto como "Next.js".
-        *   **Build Command:** Haz clic en **"Override"**. **BORRA** todo lo que haya y escribe exactamente `npm run build`.
-        *   **Install Command:** Haz clic en **"Override"**. **BORRA** todo lo que haya y escribe exactamente `npm install`.
+    *   **PASO 1: Ajustes de Construcción.**
+        *   **Root Directory:** **"Edit"** -> selecciona **`packages/web`**.
+        *   **Build Command:** **"Override"** -> escribe `npm run build`.
+        *   **Install Command:** **"Override"** -> escribe `npm install`.
 
-    *   **PASO 2: Variables de Entorno (Environment Variables).**
+    *   **PASO 2: Variables de Entorno.**
         *   Añade las siguientes dos variables:
 
-        *   **Variable 1 (La dirección de la API):**
+        *   **Variable 1 (API):**
             *   **Name:** `NEXT_PUBLIC_API_URL`
             *   **Value:** Pega la URL de tu API de Render.
 
-        *   **Variable 2 (La dirección de la Base de Datos):**
+        *   **Variable 2 (Base de Datos):**
             *   **Name:** `DATABASE_URL`
-            *   **Value:** Pega la "External Connection String" que copiaste de Render.
+            *   **Value:** Pega la "External Connection String" de Render.
 
     *   **Haz clic en "Deploy"**.
 
-Con esta configuración, Vercel sabrá que solo debe concentrarse en la carpeta `packages/web`, usará los comandos correctos para instalar y construir tu aplicación de Next.js, y tendrá las direcciones necesarias para funcionar.
-
-Ahora sí, funcionará. Lamento profundamente el largo camino hasta esta solución.
+¡Listo! Con esto, tu aplicación estará en línea y configurada de forma segura.

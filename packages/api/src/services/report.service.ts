@@ -7,6 +7,7 @@ interface CreateReportData {
   projectName: string;
   cableLengthMeters: number;
   workType: 'NUEVA_CONSTRUCCION' | 'REMODELACION';
+  userId: string;
 }
 
 export async function createVLFReport(data: CreateReportData) {
@@ -21,6 +22,7 @@ export async function createVLFReport(data: CreateReportData) {
       cableLengthMeters: data.cableLengthMeters,
       workType: data.workType,
       testVoltageVolts: testVoltageVolts,
+      userId: data.userId, // Associate the report with the user
       // Other fields will use their default values from the schema
     },
   });

@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+import withAuth from '../src/hocs/withAuth';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from 'react';
@@ -22,8 +23,18 @@ const Home: NextPage = () => {
     setErrorMessage('');
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const token = localStorage.getItem('authToken');
+
+      if (!token) {
+        setErrorMessage('No estás autenticado. Por favor, inicia sesión de nuevo.');
+        return;
+      }
+
       const response = await axios.post(`${apiUrl}/api/reports`, data, {
         responseType: 'blob', // Important: we expect a binary file back
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       // Create a Blob from the PDF stream
@@ -97,4 +108,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default withAuth(Home);
