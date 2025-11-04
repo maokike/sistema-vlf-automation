@@ -4,9 +4,10 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "build": "DATABASE_URL=\"postgresql://dummy:dummy@dummy:5432/dummy\" prisma generate && tsc",
+    "build": "tsc",
     "start": "node dist/index.js",
-    "prisma": "dotenv -- npx prisma"
+    "prisma": "dotenv -- npx prisma",
+    "prisma:generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -17,14 +18,13 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "pg": "^8.16.3",
-    "puppeteer": "^24.28.0"
+    "puppeteer": "^24.27.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.9.2",
     "@types/pg": "^8.15.6",
-    "@types/puppeteer": "^5.4.7",
     "dotenv-cli": "^11.0.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.18.0",
