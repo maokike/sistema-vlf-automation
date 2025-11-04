@@ -1,5 +1,5 @@
 {
   "buildCommand": "npm run prisma:generate --workspace=api && npm run build --workspace=web",
-  "outputDirectory": "packages/web/.next",
+  "outputDirectory": ".next",
   "framework": "nextjs"
 }
