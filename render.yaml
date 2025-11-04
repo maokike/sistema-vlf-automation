@@ -1,21 +1,17 @@
-# This file configures the deployment on Render.
-# See https://render.com/docs/blueprint-spec for more details.
-
 services:
   # 1. The PostgreSQL Database
   - type: pserv
     name: vlf-database
     runtime: postgres
     postgresMajorVersion: 15
-    plan: free # Use the free instance type
+    plan: free
 
   # 2. The Backend API Service
   - type: web
     name: vlf-api
     runtime: docker
     dockerfilePath: ./packages/api/Dockerfile
-    plan: free # Use the free instance type
-    healthCheckPath: /
+    plan: free
     envVars:
       - key: DATABASE_URL
         fromService:
@@ -24,11 +20,3 @@ services:
           property: connectionString
       - key: NODE_ENV
         value: production
-    buildFilter:
-      paths:
-        - "packages/api/**"
-        - "package*.json"
-    autoDeploy: true
-    # The build command is handled by the Dockerfile
-    # The migrate command will be run after each build
-    preDeployCommand: "npm install --workspaces --production=false && npm run prisma --workspace=api -- migrate deploy"
