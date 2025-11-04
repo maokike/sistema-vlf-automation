@@ -7,7 +7,10 @@
   ],
   "scripts": {
     "dev:api": "npm run dev --workspace=api",
-    "dev:web": "npm run dev --workspace=web"
+    "dev:web": "npm run dev --workspace=web",
+    "build": "npm run build --workspaces",
+    "vercel-build": "npm run prisma:generate && npm run build --workspace=web",
+    "prisma:generate": "cd packages/api && DATABASE_URL=\"postgresql://temp:temp@temp/temp\" npx prisma generate"
   },
   "keywords": [],
   "author": "",
