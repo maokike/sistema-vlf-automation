@@ -7,6 +7,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY packages/api/package.json ./packages/api/
 
+# Copy the Prisma schema before installing dependencies
+# This is crucial for the `postinstall` script (prisma generate) to succeed
+COPY packages/api/prisma ./packages/api/prisma
+
 # Install dependencies using workspaces
 RUN npm install --workspaces --production=false
 
