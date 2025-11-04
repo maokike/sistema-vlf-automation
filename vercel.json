@@ -6,7 +6,7 @@
       "use": "@vercel/next"
     }
   ],
-  "buildCommand": "npm run build",
+  "buildCommand": "cd packages/api && DATABASE_URL=\"postgresql://dummy:dummy@dummy:5432/dummy\" npx prisma generate && cd ../.. && npm run build --workspace=api && npm run build --workspace=web",
   "outputDirectory": "packages/web/.next",
   "installCommand": "npm install"
 }
