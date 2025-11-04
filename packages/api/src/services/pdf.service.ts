@@ -29,7 +29,7 @@ export async function generatePdf(reportData: VLFReport): Promise<Buffer> {
 
   // 4. Set the content and generate PDF
   await page.setContent(populatedHtml, { waitUntil: 'networkidle0' });
-  const pdfBuffer = await page.pdf({
+  const pdfUint8Array = await page.pdf({
     format: 'A4',
     printBackground: true,
     margin: {
@@ -43,5 +43,6 @@ export async function generatePdf(reportData: VLFReport): Promise<Buffer> {
   // 5. Close the browser
   await browser.close();
 
-  return pdfBuffer;
+  // Convert Uint8Array to Buffer to satisfy TypeScript in strict environments
+  return Buffer.from(pdfUint8Array);
 }
