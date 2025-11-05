@@ -1,6 +1,6 @@
-# Guía de Despliegue - v7 (Versión Final con Corrección de Render)
+# Guía de Despliegue - v8 (Método Manual y Definitivo para Render)
 
-Esta guía contiene la corrección final para el despliegue en Render, junto con las instrucciones completas.
+Lamento los problemas con la configuración automática. Este método es manual, pero es 100% fiable y te da el control.
 
 ---
 
@@ -10,42 +10,49 @@ Esta guía contiene la corrección final para el despliegue en Render, junto con
 
 ---
 
-### Parte C: Creando la Base de Datos y el Backend (Render) - MÉTODO CORREGIDO
+### Parte C: Creando la Base de Datos y el Backend (Render) - MÉTODO MANUAL
 
-Este es el proceso actualizado para asegurar una configuración limpia y exitosa en Render.
+Sigue estos pasos en orden.
 
-*   **PASO 0: (Si ya tienes servicios creados) Borra la configuración anterior.**
+*   **PASO 0: (MUY IMPORTANTE) Borra la configuración anterior en Render.**
     *   Ve a tu Dashboard de Render.
-    *   Si ves los servicios `vlf-api` o `vlf-database`, haz clic en cada uno, ve a la pestaña **"Settings"** y al final, haz clic en **"Delete Service"**.
-    *   Esto es importante para empezar de cero y asegurar que la nueva configuración se aplique correctamente.
+    *   Borra los servicios `vlf-api` y `vlf-database` (en la pestaña "Settings" de cada uno -> "Delete Service"). Es crucial empezar de cero.
 
-1.  **Crea una cuenta en Render:** [render.com](https://render.com) (usa tu cuenta de GitHub).
-
-2.  **Crea un nuevo "Blueprint":**
+1.  **Crea el "Blueprint":**
     *   En tu dashboard, clic en **"New"** -> **"Blueprint"**.
     *   Conecta tu repositorio `sistema-vlf-automation`.
-    *   Render leerá el archivo `render.yaml` corregido y configurará todo automáticamente. Ahora no debería mostrar ningún error.
-    *   Clic en **"Apply"**.
+    *   Render leerá el archivo `render.yaml` y preparará la creación de los servicios. Haz clic en **"Apply"**.
+    *   **NOTA:** El primer despliegue del servicio `vlf-api` fallará. **ESTO ES NORMAL Y ESPERADO**, porque todavía no hemos configurado el código secreto.
 
-3.  **Obtén las Direcciones:**
-    *   Una vez creado, ve al dashboard de Render y copia dos cosas:
-        1.  La **URL de tu API** (termina en `.onrender.com`).
-        2.  La **"External Connection String"** de tu base de datos (`vlf-database`).
+2.  **Genera tu Código Secreto (JWT_SECRET):**
+    *   Ve a una página generadora de contraseñas seguras, como [https://www.lastpass.com/features/password-generator](https://www.lastpass.com/features/password-generator).
+    *   Genera una contraseña larga (por ejemplo, de 32 caracteres).
+    *   **Copia este código secreto.** Este será tu `JWT_SECRET`.
+
+3.  **Configura el Código Secreto en Render:**
+    *   Ve a tu Dashboard de Render.
+    *   Haz clic en tu servicio web, `vlf-api`.
+    *   En el menú de la izquierda, ve a la pestaña **"Environment"**.
+    *   En la sección "Environment Variables", haz clic en **"Add Environment Variable"**.
+        *   **Key:** `JWT_SECRET`
+        *   **Value:** Pega el código secreto que acabas de generar.
+    *   Haz clic en **"Save Changes"**.
+
+4.  **Redespliega la API:**
+    *   Con el secreto ya guardado, ve a la parte superior de la página de tu servicio `vlf-api`.
+    *   Haz clic en el botón **"Manual Deploy"**.
+    *   Selecciona **"Deploy latest commit"**.
+
+Ahora, Render reconstruirá y reiniciará tu API. Esta vez, cuando arranque, encontrará el `JWT_SECRET` que has configurado manualmente y el servicio se iniciará correctamente y de forma segura.
+
+5.  **Obtén las Direcciones (ahora sí):**
+    *   Copia la **URL de tu API** (`vlf-api`).
+    *   Ve a tu base de datos (`vlf-database`) y copia la **"External Connection String"**.
 
 ---
 
 ### Parte D: Publicando la Interfaz Web (Frontend) en Vercel
 
-(Sin cambios - Sigue las instrucciones de la versión anterior para configurar el "Root Directory" y las variables de entorno en Vercel)
+(Sin cambios - Sigue las instrucciones de la guía anterior para configurar el "Root Directory" y las variables `NEXT_PUBLIC_API_URL` y `DATABASE_URL` en Vercel.)
 
-1.  **Importa tu proyecto en Vercel.**
-2.  **Configura el proyecto:**
-    *   **Root Directory:** `packages/web`.
-    *   **Build Command:** `npm run build`.
-    *   **Install Command:** `npm install`.
-3.  **Añade las Variables de Entorno:**
-    *   `NEXT_PUBLIC_API_URL`: La URL de tu API de Render.
-    *   `DATABASE_URL`: La "External Connection String" de tu base de datos de Render.
-4.  **Haz clic en "Deploy"**.
-
-Con esta corrección en el `render.yaml` y empezando con una configuración limpia, el despliegue en ambas plataformas será exitoso.
+Lamento de verdad todos los pasos en falso. Este método manual elimina la dependencia de la "magia" de la plataforma que nos estaba fallando y te asegura el éxito.

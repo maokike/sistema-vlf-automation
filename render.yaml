@@ -23,7 +23,7 @@ services:
           name: vlf-database
           property: connectionString
       - key: JWT_SECRET
-        generateValue: true # Let Render generate a secure, random string
+        value: "" # This will be set manually in the Render dashboard
       - key: NODE_ENV
         value: production
     buildFilter:
