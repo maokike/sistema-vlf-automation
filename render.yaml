@@ -6,7 +6,7 @@ services:
   - type: pserv
     name: vlf-database
     runtime: postgres
-    postgresMajorVersion: 15
+    engineVersion: 15
     plan: free # Use the free instance type
 
   # 2. The Backend API Service

@@ -1,6 +1,6 @@
-# Guía de Despliegue - v6 (Versión Segura y Final)
+# Guía de Despliegue - v7 (Versión Final con Corrección de Render)
 
-Esta guía contiene las instrucciones finales y seguras para el despliegue. He añadido una mejora de seguridad automática.
+Esta guía contiene la corrección final para el despliegue en Render, junto con las instrucciones completas.
 
 ---
 
@@ -10,15 +10,21 @@ Esta guía contiene las instrucciones finales y seguras para el despliegue. He a
 
 ---
 
-### Parte C: Creando la Base de Datos y el Backend (Render)
+### Parte C: Creando la Base de Datos y el Backend (Render) - MÉTODO CORREGIDO
+
+Este es el proceso actualizado para asegurar una configuración limpia y exitosa en Render.
+
+*   **PASO 0: (Si ya tienes servicios creados) Borra la configuración anterior.**
+    *   Ve a tu Dashboard de Render.
+    *   Si ves los servicios `vlf-api` o `vlf-database`, haz clic en cada uno, ve a la pestaña **"Settings"** y al final, haz clic en **"Delete Service"**.
+    *   Esto es importante para empezar de cero y asegurar que la nueva configuración se aplique correctamente.
 
 1.  **Crea una cuenta en Render:** [render.com](https://render.com) (usa tu cuenta de GitHub).
 
-2.  **Crea un "Blueprint":**
+2.  **Crea un nuevo "Blueprint":**
     *   En tu dashboard, clic en **"New"** -> **"Blueprint"**.
     *   Conecta tu repositorio `sistema-vlf-automation`.
-    *   Render leerá el archivo `render.yaml` y configurará todo automáticamente.
-    *   **Nota de Seguridad:** Verás que Render planea crear una variable llamada `JWT_SECRET`. Este es un "secreto" de seguridad para la autenticación de usuarios. Lo hemos configurado para que Render genere un valor seguro y aleatorio por ti. ¡No necesitas hacer nada!
+    *   Render leerá el archivo `render.yaml` corregido y configurará todo automáticamente. Ahora no debería mostrar ningún error.
     *   Clic en **"Apply"**.
 
 3.  **Obtén las Direcciones:**
@@ -30,28 +36,16 @@ Esta guía contiene las instrucciones finales y seguras para el despliegue. He a
 
 ### Parte D: Publicando la Interfaz Web (Frontend) en Vercel
 
-1.  **Crea una cuenta en Vercel:** [vercel.com](https://vercel.com) (usa tu cuenta de GitHub).
+(Sin cambios - Sigue las instrucciones de la versión anterior para configurar el "Root Directory" y las variables de entorno en Vercel)
 
-2.  **Importa tu proyecto:**
-    *   **"Add New..."** -> **"Project"** -> Importa tu repositorio `sistema-vlf-automation`.
+1.  **Importa tu proyecto en Vercel.**
+2.  **Configura el proyecto:**
+    *   **Root Directory:** `packages/web`.
+    *   **Build Command:** `npm run build`.
+    *   **Install Command:** `npm install`.
+3.  **Añade las Variables de Entorno:**
+    *   `NEXT_PUBLIC_API_URL`: La URL de tu API de Render.
+    *   `DATABASE_URL`: La "External Connection String" de tu base de datos de Render.
+4.  **Haz clic en "Deploy"**.
 
-3.  **Configura el proyecto:**
-    *   **PASO 1: Ajustes de Construcción.**
-        *   **Root Directory:** **"Edit"** -> selecciona **`packages/web`**.
-        *   **Build Command:** **"Override"** -> escribe `npm run build`.
-        *   **Install Command:** **"Override"** -> escribe `npm install`.
-
-    *   **PASO 2: Variables de Entorno.**
-        *   Añade las siguientes dos variables:
-
-        *   **Variable 1 (API):**
-            *   **Name:** `NEXT_PUBLIC_API_URL`
-            *   **Value:** Pega la URL de tu API de Render.
-
-        *   **Variable 2 (Base de Datos):**
-            *   **Name:** `DATABASE_URL`
-            *   **Value:** Pega la "External Connection String" de Render.
-
-    *   **Haz clic en "Deploy"**.
-
-¡Listo! Con esto, tu aplicación estará en línea y configurada de forma segura.
+Con esta corrección en el `render.yaml` y empezando con una configuración limpia, el despliegue en ambas plataformas será exitoso.
