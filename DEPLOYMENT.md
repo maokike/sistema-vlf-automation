@@ -1,58 +1,45 @@
-# Guía de Despliegue - v8 (Método Manual y Definitivo para Render)
+# Guía de Despliegue
 
-Lamento los problemas con la configuración automática. Este método es manual, pero es 100% fiable y te da el control.
+Este documento proporciona las instrucciones para desplegar el backend y el frontend en plataformas de nube gratuitas.
 
----
+## Backend (API) en Render
 
-### Parte A y B: Preparación y Subida a GitHub
+El backend está configurado para desplegarse automáticamente en Render usando el archivo `render.yaml` que se encuentra en la raíz del proyecto.
 
-(Sin cambios - Asegúrate de que tu última versión del código esté en GitHub)
+### Pasos:
 
----
+1.  **Crea una cuenta** en [Render](https://render.com/).
+2.  **Crea un "New Blueprint"**: En tu dashboard, haz clic en "New" y luego en "Blueprint".
+3.  **Conecta tu repositorio**: Selecciona el repositorio de GitHub donde se encuentra este proyecto. Render detectará y usará automáticamente el archivo `render.yaml`.
+4.  **Acepta y despliega**: Render configurará la base de datos PostgreSQL y el servicio de la API.
 
-### Parte C: Creando la Base de Datos y el Backend (Render) - MÉTODO MANUAL
+### ⚠️ ACCIÓN MANUAL REQUERIDA (Solo una vez) ⚠️
 
-Sigue estos pasos en orden.
+Debido a las limitaciones del plan gratuito de Render, el comando para preparar la base de datos (`migrate deploy`) no se puede ejecutar automáticamente. Debes hacerlo manualmente después de que el primer despliegue haya sido exitoso.
 
-*   **PASO 0: (MUY IMPORTANTE) Borra la configuración anterior en Render.**
-    *   Ve a tu Dashboard de Render.
-    *   Borra los servicios `vlf-api` y `vlf-database` (en la pestaña "Settings" de cada uno -> "Delete Service"). Es crucial empezar de cero.
+**¿Cómo ejecutar la migración manual?**
 
-1.  **Crea el "Blueprint":**
-    *   En tu dashboard, clic en **"New"** -> **"Blueprint"**.
-    *   Conecta tu repositorio `sistema-vlf-automation`.
-    *   Render leerá el archivo `render.yaml` y preparará la creación de los servicios. Haz clic en **"Apply"**.
-    *   **NOTA:** El primer despliegue del servicio `vlf-api` fallará. **ESTO ES NORMAL Y ESPERADO**, porque todavía no hemos configurado el código secreto.
+1.  Una vez que el servicio `vlf-api` esté desplegado en Render, ve a la pestaña **"Shell"** de ese servicio.
+2.  La terminal se conectará a tu contenedor. Una vez que veas el prompt, escribe el siguiente comando y presiona Enter:
 
-2.  **Genera tu Código Secreto (JWT_SECRET):**
-    *   Ve a una página generadora de contraseñas seguras, como [https://www.lastpass.com/features/password-generator](https://www.lastpass.com/features/password-generator).
-    *   Genera una contraseña larga (por ejemplo, de 32 caracteres).
-    *   **Copia este código secreto.** Este será tu `JWT_SECRET`.
+    ```bash
+    npm run prisma --workspace=api -- migrate deploy
+    ```
 
-3.  **Configura el Código Secreto en Render:**
-    *   Ve a tu Dashboard de Render.
-    *   Haz clic en tu servicio web, `vlf-api`.
-    *   En el menú de la izquierda, ve a la pestaña **"Environment"**.
-    *   En la sección "Environment Variables", haz clic en **"Add Environment Variable"**.
-        *   **Key:** `JWT_SECRET`
-        *   **Value:** Pega el código secreto que acabas de generar.
-    *   Haz clic en **"Save Changes"**.
+3.  El comando preparará la base de datos. Una vez que termine, la API funcionará correctamente. Solo necesitas hacer esto **la primera vez** o cada vez que haya cambios en la estructura de la base de datos.
 
-4.  **Redespliega la API:**
-    *   Con el secreto ya guardado, ve a la parte superior de la página de tu servicio `vlf-api`.
-    *   Haz clic en el botón **"Manual Deploy"**.
-    *   Selecciona **"Deploy latest commit"**.
+## Frontend (Web) en Vercel
 
-Ahora, Render reconstruirá y reiniciará tu API. Esta vez, cuando arranque, encontrará el `JWT_SECRET` que has configurado manualmente y el servicio se iniciará correctamente y de forma segura.
+El frontend está optimizado para Vercel.
 
-5.  **Obtén las Direcciones (ahora sí):**
-    *   Copia la **URL de tu API** (`vlf-api`).
-    *   Ve a tu base de datos (`vlf-database`) y copia la **"External Connection String"**.
+### Pasos:
 
----
+1.  **Crea una cuenta** en [Vercel](https://vercel.com/).
+2.  **Crea un "New Project"**: En tu dashboard, haz clic en "Add New..." y luego en "Project".
+3.  **Importa tu repositorio**: Selecciona el repositorio de GitHub.
+4.  **Configura el proyecto**:
+    *   **Root Directory**: ¡MUY IMPORTANTE! Debes cambiar el directorio raíz a `packages/web`. Vercel lo detectará como una aplicación Next.js.
+    *   **Environment Variables**: Añade una variable de entorno llamada `NEXT_PUBLIC_API_URL` y asígnale la URL de tu backend desplegado en Render (la encontrarás en el dashboard de tu servicio de Render, por ejemplo: `https://vlf-api.onrender.com`).
+5.  **Despliega**: Haz clic en "Deploy". Vercel se encargará del resto.
 
-### Parte D: Publicando la Interfaz Web (Frontend) en Vercel
-
-(Sin cambios - Sigue las instrucciones de la guía anterior para configurar el "Root Directory" y las variables `NEXT_PUBLIC_API_URL` y `DATABASE_URL` en Vercel.)
-
-Lamento de verdad todos los pasos en falso. Este método manual elimina la dependencia de la "magia" de la plataforma que nos estaba fallando y te asegura el éxito.
+¡Y listo! Con estos pasos, tendrás tu aplicación completa funcionando en la nube.

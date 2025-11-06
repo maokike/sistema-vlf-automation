@@ -10,43 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model VLFReport {
-  id                   String     @id @default(uuid())
-  projectName          String
-  clientName           String
-  cableLengthMeters    Float
-  resistanceOhms       Float      @default(0) // Default value, will be calculated
-  cableBrand           String     @default("N/A") // Default value
-  workType             WorkType
-  testVoltageVolts     Int
-  testResult           TestResult @default(PENDIENTE)
-  testPointDescription String     @default("Subestación + Interconexión")
-  createdAt            DateTime   @default(now())
-  updatedAt            DateTime   @updatedAt
-
-  // Relation to User
-  user                 User       @relation(fields: [userId], references: [id])
-  userId               String
-
-  @@map("vlf_reports")
-}
-
-model User {
-  id        String      @id @default(uuid())
-  username  String      @unique
-  password  String
-  reports   VLFReport[]
-
-  @@map("users")
-}
-
-enum WorkType {
-  NUEVA_CONSTRUCCION
-  REMODELACION
-}
-
-enum TestResult {
-  APROBADO
-  FALLIDO
-  PENDIENTE
+model VlfReport {
+  id              Int      @id @default(autoincrement())
+  proyecto        String
+  cliente         String
+  distancia_cable Float
+  resistencia     Float
+  marca_cable     String
+  voltaje         Int
+  fecha_prueba    DateTime @default(now())
+  punto_prueba    String
 }

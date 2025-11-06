@@ -1,10 +1,12 @@
-services:
-  # 1. The PostgreSQL Database
-  - type: pserv
-    name: vlf-database
-    runtime: postgres
-    plan: free
+# render.yaml - Configuración corregida para Render
 
+databases:
+  # 1. The PostgreSQL Database
+  - name: vlf-database
+    plan: free
+    postgresMajorVersion: "15" # Especifica la versión como un string
+
+services:
   # 2. The Backend API Service
   - type: web
     name: vlf-api
@@ -14,12 +16,11 @@ services:
     healthCheckPath: /
     envVars:
       - key: DATABASE_URL
-        fromService:
-          type: pserv
+        fromDatabase: # Corregido: Referencia a un 'database', no a un 'service'
           name: vlf-database
           property: connectionString
-      - key: JWT_SECRET # IMPORTANT: Set this manually in the Render dashboard
+      - key: JWT_SECRET
+        generateValue: true # Corregido: Render gestionará el secreto automáticamente
       - key: NODE_ENV
         value: production
     autoDeploy: true
-    preDeployCommand: "npm install --workspaces --omit=dev && npm run prisma --workspace=api -- migrate deploy"

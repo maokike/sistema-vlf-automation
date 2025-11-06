@@ -1,17 +1,12 @@
 {
   "name": "sistema-vlf-automation",
-  "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "dev:api": "npm run dev --workspace=api",
-    "dev:web": "npm run dev --workspace=web",
-    "postinstall": "npm run prisma:generate --workspace=api"
+    "dev": "pnpm --parallel --stream dev",
+    "build": "pnpm --filter \"./packages/*\" build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "packageManager": "pnpm@8.6.1"
 }
