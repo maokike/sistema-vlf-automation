@@ -1,23 +1,23 @@
 import puppeteer from 'puppeteer';
-import { VLFReport } from '@prisma/client';
+import { VlfReport } from '@prisma/client';
 import fs from 'fs/promises';
 import path from 'path';
 
 // We will create the template in the next step
 const templatePath = path.join(__dirname, '../templates/report.template.html');
 
-export async function generatePdf(reportData: VLFReport): Promise<Buffer> {
+export async function generatePdf(reportData: VlfReport): Promise<Buffer> {
   // 1. Read the HTML template
   const htmlTemplate = await fs.readFile(templatePath, 'utf-8');
 
   // 2. Inject data into the template
   const populatedHtml = htmlTemplate
-    .replace('{{cliente}}', reportData.clientName)
-    .replace('{{proyecto}}', reportData.projectName)
-    .replace('{{fecha_prueba}}', reportData.createdAt.toLocaleDateString('es-ES'))
-    .replace('{{voltaje}}', reportData.testVoltageVolts.toString())
-    .replace('{{distancia_cable}}', reportData.cableLengthMeters.toString())
-    .replace('{{resultado}}', reportData.testResult);
+    .replace('{{cliente}}', reportData.cliente)
+    .replace('{{proyecto}}', reportData.proyecto)
+    .replace('{{fecha_prueba}}', reportData.fecha_prueba.toLocaleDateString('es-ES'))
+    .replace('{{voltaje}}', reportData.voltaje.toString())
+    .replace('{{distancia_cable}}', reportData.distancia_cable.toString())
+    .replace('{{resultado}}', reportData.resistencia > 0 ? "SATISFACTORIO" : "NO SATISFACTORIO"); // Example logic
     // Add more replacements as needed
 
   // 3. Launch Puppeteer

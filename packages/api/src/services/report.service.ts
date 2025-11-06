@@ -1,29 +1,35 @@
 import prisma from '../lib/prisma';
-import { WorkType } from '@prisma/client';
 import { generatePdf } from './pdf.service';
 
 interface CreateReportData {
-  clientName: string;
-  projectName: string;
-  cableLengthMeters: number;
-  workType: 'NUEVA_CONSTRUCCION' | 'REMODELACION';
-  userId: string;
+  cliente: string;
+  proyecto: string;
+  distancia_cable: number;
+  // These are now auto-calculated or pre-defined
+  // marca_cable: string;
+  // resistencia: number;
+  tipo_construccion: 'NUEVA_CONSTRUCCION' | 'REMODELACION';
 }
 
 export async function createVLFReport(data: CreateReportData) {
   // 1. Calculate automatic values
-  const testVoltageVolts = data.workType === 'NUEVA_CONSTRUCCION' ? 46000 : 35000;
+  const voltaje = data.tipo_construccion === 'NUEVA_CONSTRUCCION' ? 46000 : 35000;
+
+  // Placeholder values for automatic data
+  const resistencia = Math.random() * 10; // Placeholder
+  const marca_cable = 'MARCA_EJEMPLO'; // Placeholder
+  const punto_prueba = 'Subestación Principal - Interconexión Edificio B'; // Placeholder
 
   // 2. Save the report to the database
-  const newReport = await prisma.vLFReport.create({
+  const newReport = await prisma.vlfReport.create({
     data: {
-      clientName: data.clientName,
-      projectName: data.projectName,
-      cableLengthMeters: data.cableLengthMeters,
-      workType: data.workType,
-      testVoltageVolts: testVoltageVolts,
-      userId: data.userId, // Associate the report with the user
-      // Other fields will use their default values from the schema
+      cliente: data.cliente,
+      proyecto: data.proyecto,
+      distancia_cable: data.distancia_cable,
+      voltaje: voltaje,
+      resistencia: resistencia,
+      marca_cable: marca_cable,
+      punto_prueba: punto_prueba,
     },
   });
 
