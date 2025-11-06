@@ -3,7 +3,6 @@ services:
   - type: pserv
     name: vlf-database
     runtime: postgres
-    engineVersion: 15
     plan: free
 
   # 2. The Backend API Service
