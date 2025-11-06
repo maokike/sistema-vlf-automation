@@ -5,14 +5,18 @@ WORKDIR /usr/src/app
 
 # Copy root package.json and workspace configuration
 COPY package*.json ./
+COPY pnpm-workspace.yaml ./
+
+# Copy all package.json files to reconstruct the workspace structure
 COPY packages/api/package.json ./packages/api/
+COPY packages/web/package.json ./packages/web/
 
 # Copy the Prisma schema before installing dependencies
-# This is crucial for the `postinstall` script (prisma generate) to succeed
 COPY packages/api/prisma ./packages/api/prisma
 
 # Install dependencies using workspaces
-RUN npm install --workspaces --production=false
+# We copy all package.json files so npm can resolve the workspace correctly
+RUN npm install --workspaces --omit=dev
 
 # Copy the rest of the backend source code
 COPY packages/api/ ./packages/api/
@@ -36,7 +40,7 @@ COPY --from=builder /usr/src/app/packages/api/package.json ./package.json
 # Copy the built application code
 COPY --from=builder /usr/src/app/packages/api/dist ./dist
 
-# Copy Prisma schema
+# Copy Prisma schema and templates
 COPY --from=builder /usr/src/app/packages/api/prisma ./prisma
 COPY --from=builder /usr/src/app/packages/api/src/templates ./dist/templates
 
