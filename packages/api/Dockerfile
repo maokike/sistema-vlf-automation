@@ -11,10 +11,8 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/api/package.json ./packages/api/
 COPY packages/web/package.json ./packages/web/
 
-# Tell Puppeteer to skip downloading Chrome. We'll install a system version instead.
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-# Install all dependencies for building
+# Install all dependencies for building.
+# The "pnpm.overrides" in package.json will prevent puppeteer from downloading Chrome.
 RUN pnpm install --frozen-lockfile
 
 # Copy the entire source code
@@ -34,16 +32,13 @@ FROM node:18-alpine
 RUN npm install -g pnpm
 
 # Install system-level dependencies for running Puppeteer headlessly
-# This is much faster and smaller than downloading a full Chrome browser.
 RUN apk add --no-cache \
     chromium \
     nss \
     freetype \
     harfbuzz \
     ca-certificates \
-    ttf-freefont \
-    nodejs \
-    npm
+    ttf-freefont
 
 WORKDIR /usr/src/app
 
@@ -57,10 +52,8 @@ COPY --from=builder /usr/src/app/packages/api/dist ./packages/api/dist
 COPY --from=builder /usr/src/app/packages/api/prisma ./packages/api/prisma
 COPY --from=builder /usr/src/app/packages/api/src/templates ./packages/api/src/templates
 
-# Tell Puppeteer to skip downloading Chrome again for the production install
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-# Install ONLY production dependencies
+# Install ONLY production dependencies.
+# The "pnpm.overrides" will ensure puppeteer-core is used.
 RUN pnpm install --prod --frozen-lockfile
 
 ENV NODE_ENV=production

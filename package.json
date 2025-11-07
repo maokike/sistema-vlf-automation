@@ -8,5 +8,10 @@
   "devDependencies": {
     "typescript": "^5.0.0"
   },
-  "packageManager": "pnpm@8.6.1"
+  "packageManager": "pnpm@8.6.1",
+  "pnpm": {
+    "overrides": {
+      "puppeteer": "npm:puppeteer-core@^20.9.0"
+    }
+  }
 }
