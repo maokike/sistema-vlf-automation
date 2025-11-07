@@ -3,31 +3,33 @@ import { VlfReport } from '@prisma/client';
 import fs from 'fs/promises';
 import path from 'path';
 
-// We will create the template in the next step
 const templatePath = path.join(__dirname, '../templates/report.template.html');
 
 export async function generatePdf(reportData: VlfReport): Promise<Buffer> {
-  // 1. Read the HTML template
   const htmlTemplate = await fs.readFile(templatePath, 'utf-8');
 
-  // 2. Inject data into the template
   const populatedHtml = htmlTemplate
     .replace('{{cliente}}', reportData.cliente)
     .replace('{{proyecto}}', reportData.proyecto)
     .replace('{{fecha_prueba}}', reportData.fecha_prueba.toLocaleDateString('es-ES'))
     .replace('{{voltaje}}', reportData.voltaje.toString())
     .replace('{{distancia_cable}}', reportData.distancia_cable.toString())
-    .replace('{{resultado}}', reportData.resistencia > 0 ? "SATISFACTORIO" : "NO SATISFACTORIO"); // Example logic
-    // Add more replacements as needed
+    .replace('{{resultado}}', reportData.resistencia > 0 ? "SATISFACTORIO" : "NO SATISFACTORIO");
 
-  // 3. Launch Puppeteer
+  // Launch Puppeteer, pointing to the system-installed Chromium
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Required for running in a container
+    executablePath: '/usr/bin/chromium-browser', // Path for Alpine Linux Chromium
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage', // Recommended for running in Docker
+      '--single-process'
+    ],
   });
+
   const page = await browser.newPage();
 
-  // 4. Set the content and generate PDF
   await page.setContent(populatedHtml, { waitUntil: 'networkidle0' });
   const pdfUint8Array = await page.pdf({
     format: 'A4',
@@ -40,9 +42,7 @@ export async function generatePdf(reportData: VlfReport): Promise<Buffer> {
     },
   });
 
-  // 5. Close the browser
   await browser.close();
 
-  // Convert Uint8Array to Buffer to satisfy TypeScript in strict environments
   return Buffer.from(pdfUint8Array);
 }
