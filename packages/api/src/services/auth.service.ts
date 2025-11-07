@@ -8,12 +8,12 @@ if (!process.env.JWT_SECRET) {
 }
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export async function registerUser(data: Pick<User, 'username' | 'password'>) {
+export async function registerUser(data: Pick<User, 'email' | 'password'>) {
   const hashedPassword = await bcrypt.hash(data.password, 10);
 
   const user = await prisma.user.create({
     data: {
-      username: data.username,
+      email: data.email,
       password: hashedPassword,
     },
   });
@@ -21,23 +21,23 @@ export async function registerUser(data: Pick<User, 'username' | 'password'>) {
   return user;
 }
 
-export async function loginUser(data: Pick<User, 'username' | 'password'>) {
+export async function loginUser(data: Pick<User, 'email' | 'password'>) {
   const user = await prisma.user.findUnique({
-    where: { username: data.username },
+    where: { email: data.email },
   });
 
   if (!user) {
-    throw new Error('Invalid username or password');
+    throw new Error('Invalid email or password');
   }
 
   const isPasswordValid = await bcrypt.compare(data.password, user.password);
 
   if (!isPasswordValid) {
-    throw new Error('Invalid username or password');
+    throw new Error('Invalid email or password');
   }
 
-  const token = jwt.sign({ userId: user.id, username: user.username }, JWT_SECRET, {
-    expiresIn: '1h', // Token will be valid for 1 hour
+  const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+    expiresIn: '24h', // Token will be valid for 24 hours
   });
 
   return { token };

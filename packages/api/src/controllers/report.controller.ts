@@ -8,26 +8,19 @@ interface AuthRequest extends Request {
 
 export async function createReport(req: AuthRequest, res: Response) {
   try {
-    // The user ID is now available from the authenticated request
-    const userId = req.user?.userId;
-    if (!userId) {
-      return res.status(401).json({ message: 'Unauthorized: User ID is missing' });
-    }
-
-    const { clientName, projectName, cableLengthMeters, workType } = req.body;
+    const { cliente, proyecto, distancia_cable, tipo_construccion } = req.body;
 
     // Basic validation
-    if (!clientName || !projectName || !cableLengthMeters || !workType) {
-      return res.status(400).json({ message: 'Missing required fields' });
+    if (!cliente || !proyecto || !distancia_cable || !tipo_construccion) {
+      return res.status(400).json({ message: 'Faltan campos obligatorios' });
     }
 
-    // Call the service to create the report and generate the PDF, now with userId
+    // Call the service to create the report and generate the PDF
     const { report, pdf } = await createVLFReport({
-      clientName,
-      projectName,
-      cableLengthMeters,
-      workType,
-      userId,
+      cliente,
+      proyecto,
+      distancia_cable,
+      tipo_construccion,
     });
 
     // Set headers to tell the browser it's a PDF file
@@ -35,10 +28,10 @@ export async function createReport(req: AuthRequest, res: Response) {
     res.setHeader('Content-Disposition', `attachment; filename=dictamen-${report.id}.pdf`);
 
     // Send the PDF buffer as the response
-    res.status(200).send(pdf);
+    res.status(200).end(pdf);
 
   } catch (error) {
     console.error('Error creating report:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 }
