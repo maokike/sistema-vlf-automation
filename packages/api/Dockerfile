@@ -4,14 +4,12 @@
 FROM node:18-bullseye-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
-# evitar que puppeteer descargue su Chromium en install
 ENV PUPPETEER_SKIP_DOWNLOAD=true
-# forzar prisma a usar binario en producción/build
 ENV PRISMA_CLIENT_ENGINE_TYPE=binary
 
 WORKDIR /usr/src/app
 
-# instalar herramientas del sistema necesarias para algunas dependencias nativas (prisma, sharp, bcrypt, etc.)
+# Instalar herramientas del sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     build-essential \
@@ -22,24 +20,37 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
   && rm -rf /var/lib/apt/lists/*
 
-# instalar pnpm
+# Instalar pnpm
 RUN npm install -g pnpm
 
-# copiar archivos raíz del monorepo y package.json de workspaces
+# Copiar archivos principales del monorepo
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/api/package.json ./packages/api/
 COPY packages/web/package.json ./packages/web/
 
-# instalar dependencias (usa el lockfile)
+# Instalar dependencias
 RUN pnpm install --frozen-lockfile
 
-# copiar todo el código
-COPY . .
+# Copiar solo el código necesario del API (evita sobreescribir prisma)
+COPY packages/api ./packages/api
 
-# generar prisma client (ruta explícita al schema del workspace api)
-RUN pnpm --filter api exec prisma generate --schema=packages/api/prisma/schema.prisma
+# Asegurar que Prisma tenga acceso al schema
+COPY packages/api/prisma ./packages/api/prisma
 
-# compilar TypeScript sólo para API
+# Verificar que el schema exista (debug)
+ RUN echo "PWD:" && pwd && \
+    echo "--- LISTING /usr/src/app ---" && ls -la && \
+    echo "--- LISTING packages ---" && ls -la packages || true && \
+    echo "--- LISTING packages/api ---" && ls -la packages/api || true && \
+    echo "--- LISTING packages/api/prisma ---" && ls -la packages/api/prisma || true && \
+    echo "--- PRINTING schema.prisma ---" && cat packages/api/prisma/schema.prisma || true
+
+
+# Generar Prisma Client
+RUN pnpm --filter api exec npx prisma generate --schema=prisma/schema.prisma
+
+
+# Compilar el proyecto API
 RUN pnpm --filter api run build
 
 # -------------------------
@@ -54,7 +65,7 @@ ENV PRISMA_CLIENT_ENGINE_TYPE=binary
 
 WORKDIR /usr/src/app
 
-# instalar runtime libs necesarias (incluye chromium)
+# Instalar dependencias de ejecución
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     chromium \
@@ -73,26 +84,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
   && rm -rf /var/lib/apt/lists/*
 
-# instalar pnpm (para instalar dependencias de producción)
+# Instalar pnpm
 RUN npm install -g pnpm
 
-# copiar package.json + lockfile (necesario para pnpm instalar)
+# 🟢 Instalar Prisma CLI (esta es la parte clave)
+RUN pnpm add -g prisma
+
+# Copiar package.json + lockfile
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/api/package.json ./packages/api/
 COPY packages/web/package.json ./packages/web/
 
-# copiar build y artefactos generados por builder
+# Copiar build y artefactos del builder
 COPY --from=builder /usr/src/app/packages/api/dist ./packages/api/dist
 COPY --from=builder /usr/src/app/packages/api/prisma ./packages/api/prisma
 COPY --from=builder /usr/src/app/node_modules ./node_modules
-# (si necesitas templates u otros assets)
 COPY --from=builder /usr/src/app/packages/api/src/templates ./packages/api/src/templates
 
-# Instalar solo production deps (si ya trajimos node_modules desde builder, normalmente no hace falta
-# pero lo dejamos para asegurar coherencia si no se copió todo)
+# Instalar dependencias de producción
 RUN pnpm install --prod --frozen-lockfile
 
 EXPOSE 4000
 
-# Start: ejecuta migrations (deploy) apuntando al schema del workspace y luego arranca la app
+# Ejecutar migraciones y arrancar API
 CMD ["sh", "-lc", "pnpm --filter api exec prisma migrate deploy --schema=packages/api/prisma/schema.prisma && node packages/api/dist/index.js"]
