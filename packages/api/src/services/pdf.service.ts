@@ -44,5 +44,5 @@ export async function generatePdf(reportData: VlfReport): Promise<Buffer> {
 
   await browser.close();
 
-  return Buffer.from([...pdfUint8Array]);
+  return Buffer.from(pdfUint8Array);
 }
