@@ -87,8 +87,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Instalar pnpm
 RUN npm install -g pnpm
 
-# 🟢 Instalar Prisma CLI (esta es la parte clave)
-RUN pnpm add -g prisma
+# 🟢 Instalar Prisma CLI (corrección para entorno Render)
+RUN npm install -g prisma
 
 # Copiar package.json + lockfile
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -107,4 +107,4 @@ RUN pnpm install --prod --frozen-lockfile
 EXPOSE 4000
 
 # Ejecutar migraciones y arrancar API
-CMD ["sh", "-lc", "pnpm --filter api exec prisma migrate deploy --schema=packages/api/prisma/schema.prisma && node packages/api/dist/index.js"]
+CMD ["sh", "-lc", "npx prisma migrate deploy --schema=./packages/api/prisma/schema.prisma && node packages/api/dist/index.js"]
