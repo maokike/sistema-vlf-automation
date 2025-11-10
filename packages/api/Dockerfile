@@ -95,14 +95,13 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/api/package.json ./packages/api/
 COPY packages/web/package.json ./packages/web/
 
-# Copiar build y artefactos del builder
+# Copiar build y artefactos del builder (SOLO lo necesario)
 COPY --from=builder /usr/src/app/packages/api/dist ./packages/api/dist
 COPY --from=builder /usr/src/app/packages/api/prisma ./packages/api/prisma
-COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/packages/api/src/templates ./packages/api/src/templates
 
-# Instalar dependencias de producción
-RUN pnpm install --frozen-lockfile
+# SOLUCIÓN: Instalar solo dependencias de producción (NO copiar node_modules)
+RUN pnpm install --prod --frozen-lockfile
 
 EXPOSE 4000
 
