@@ -102,7 +102,7 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/packages/api/src/templates ./packages/api/src/templates
 
 # Instalar dependencias de producción
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 EXPOSE 4000
 
