@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "pnpm --filter api exec prisma generate && pnpm --filter web run build",
+  "buildCommand": "cd packages/api && npx prisma generate && cd ../web && npm run build",
   "outputDirectory": "packages/web/.next",
-  "installCommand": "pnpm install",
+  "installCommand": "npm install -g pnpm && pnpm install",
   "functions": {
     "packages/web/**/*.js": {
       "maxDuration": 30
