@@ -14,8 +14,7 @@
   "packageManager": "pnpm@8.6.1",
   "pnpm": {
     "overrides": {
-      "puppeteer": "npm:puppeteer-core@^20.9.0",
-      "next": "15.5.6"
+      "puppeteer": "npm:puppeteer-core@^20.9.0"
     }
   }
 }
