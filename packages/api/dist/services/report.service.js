@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createVLFReport = createVLFReport;
+exports.createVLFReport = void 0;
 const prisma_1 = __importDefault(require("../lib/prisma"));
 const pdf_service_1 = require("./pdf.service");
 function createVLFReport(data) {
@@ -40,3 +40,4 @@ function createVLFReport(data) {
         return { report: newReport, pdf: pdfBuffer };
     });
 }
+exports.createVLFReport = createVLFReport;

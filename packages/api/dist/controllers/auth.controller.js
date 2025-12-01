@@ -8,10 +8,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleRegister = handleRegister;
-exports.handleLogin = handleLogin;
+exports.handleLogin = exports.handleRegister = exports.handleRegisterInitialUser = void 0;
 const auth_service_1 = require("../services/auth.service");
+const prisma_1 = __importDefault(require("../lib/prisma"));
+function handleRegisterInitialUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const userCount = yield prisma_1.default.user.count();
+            if (userCount > 0) {
+                return res.status(403).json({ message: 'Initial user already exists. This endpoint is disabled.' });
+            }
+            const { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(400).json({ message: 'Email and password are required' });
+            }
+            const user = yield (0, auth_service_1.registerUser)({ email, password });
+            res.status(201).json({ message: 'Initial user created successfully', userId: user.id });
+        }
+        catch (error) {
+            console.error('Initial user registration error:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    });
+}
+exports.handleRegisterInitialUser = handleRegisterInitialUser;
 function handleRegister(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -32,6 +56,7 @@ function handleRegister(req, res) {
         }
     });
 }
+exports.handleRegister = handleRegister;
 function handleLogin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -51,3 +76,4 @@ function handleLogin(req, res) {
         }
     });
 }
+exports.handleLogin = handleLogin;

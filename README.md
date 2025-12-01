@@ -31,3 +31,18 @@ El proyecto se desarrollará de forma incremental para entregar valor de manera 
     -   Objetivo: Desarrollar la web pública y el sistema de autenticación para proteger la herramienta de informes.
 -   **Fase 3: Funcionalidades Avanzadas**
     -   Objetivo: Implementar un dashboard estadístico, gestión de roles y un editor de plantillas de informes.
+
+## Primeros Pasos: Crear el Usuario Administrador
+
+Después de desplegar la aplicación por primera vez, la base de datos estará vacía. Para poder iniciar sesión, necesitas crear el primer usuario administrador.
+
+1.  **Abre una terminal** en la raíz de tu proyecto.
+2.  **Ejecuta el siguiente comando:**
+    ```bash
+    node create-initial-user.mjs
+    ```
+3.  **Sigue las instrucciones:** El script te pedirá:
+    -   La URL de tu API desplegada en Render.
+    -   El correo electrónico y la contraseña para el nuevo usuario.
+
+Una vez que el script finalice con éxito, podrás usar esas credenciales para iniciar sesión en la aplicación.

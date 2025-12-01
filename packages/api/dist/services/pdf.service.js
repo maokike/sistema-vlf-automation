@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generatePdf = generatePdf;
+exports.generatePdf = void 0;
 const puppeteer_1 = __importDefault(require("puppeteer"));
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
@@ -30,11 +30,11 @@ function generatePdf(reportData) {
         // Launch Puppeteer, pointing to the system-installed Chromium
         const browser = yield puppeteer_1.default.launch({
             headless: true,
-            executablePath: '/usr/bin/chromium-browser', // Path for Alpine Linux Chromium
+            executablePath: '/usr/bin/chromium-browser',
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage', // Recommended for running in Docker
+                '--disable-dev-shm-usage',
                 '--single-process'
             ],
         });
@@ -54,3 +54,4 @@ function generatePdf(reportData) {
         return pdfUint8Array;
     });
 }
+exports.generatePdf = generatePdf;

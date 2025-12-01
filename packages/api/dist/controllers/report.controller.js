@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createReport = createReport;
+exports.createReport = void 0;
 const report_service_1 = require("../services/report.service");
 function createReport(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -38,3 +38,4 @@ function createReport(req, res) {
         }
     });
 }
+exports.createReport = createReport;
